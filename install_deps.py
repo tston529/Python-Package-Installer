@@ -86,10 +86,10 @@ def main():
     deps_set = list({*[dep for dep in deps]})
     print(deps_set)
 
-   # if install_deps(deps_set):
-   #     print("Already got everything!")
-   # else:
-   #     print("You should be caught up now.")
+    if install_deps(deps_set):
+        print("Already got everything!")
+    else:
+        print("You should be caught up now.")
 
 if __name__ == '__main__':
     main()
