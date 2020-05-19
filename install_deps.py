@@ -21,22 +21,28 @@ def find_deps(lines):
     # as an import in comments
     regex = re.compile(r"[^#]*(?<!#)([^#]*(?:from)?[^#]*(?:import)[^#])")
     for line in lines:
+        print(line)
         if regex.match(line):
-
-            line = line.split()
-            if line[0] == "import" or len(line) == 2:
-                for d in range(1, len(line), 1):
-                    if line[d] == 'as':
-                        break
-                    # dep = line[1].split(",")[0].split(".")
-                    deps.append(line[d].rstrip(','))
-                    pass
-            else:
-                for i in range(len(line)):
-                    token = line[i]
-                    if token == "from":
-                        deps.append(line[i+1].split(".")[0])
-                        break
+            overarching_line = line.split(';')
+            for l in overarching_line:
+                line = l.split()
+                if line[0] == "import" or len(line) == 2:
+                    for d in range(1, len(line), 1):
+                        if line[d] == 'as' or line[d].startswith("#"):
+                            break
+                        # dep = line[1].split(",")[0].split(".")
+                        dep = line[d].rstrip(',')
+                        deps.append(dep)
+                        pass
+                else:
+                    for i in range(len(line)):
+                        token = line[i]
+                        if token == "from":
+                            dep = line[i+1].split(".")[0]
+                            deps.append(dep)
+                            break
+                        elif token.startswith("#"):
+                            break
 
     return deps
 
@@ -80,10 +86,10 @@ def main():
     deps_set = list({*[dep for dep in deps]})
     print(deps_set)
 
-    if install_deps(deps_set):
-        print("Already got everything!")
-    else:
-        print("You should be caught up now.")
+   # if install_deps(deps_set):
+   #     print("Already got everything!")
+   # else:
+   #     print("You should be caught up now.")
 
 if __name__ == '__main__':
     main()
